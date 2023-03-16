@@ -15,19 +15,43 @@ d.addEventListener("DOMContentLoaded", ()=> {
 
     function validar(e) {
         if(e.target.value.trim() === ""){
-            mostrarAlerta(`El campo ${e.target.id} es obligatorio`);
+            mostrarAlerta(`El campo ${e.target.id} es obligatorio`, e.target.parentElement);
             // console.log("Esta vacio");
-        }else{
-            // console.log("No esta vacio");
+            return;
         }
+        if(e.target.id === "email" && !validarEmail(e.target.value)){
+            mostrarAlerta(`El ${e.target.id} no es valido`, e.target.parentElement);
+            return;
+        }
+        limpiarAlerta(e.target.parentElement);
     }
 
-    function mostrarAlerta(value){
+    function mostrarAlerta(value, referencia){
+        limpiarAlerta(referencia)
+        //Comprobar si existe la alerta
+        const alerta = referencia.querySelector(".bg-red-600");
+        if(alerta){
+            alerta.remove();
+        }
+        
         const error = d.createElement("p");
         error.classList.add("bg-red-600","text-white","p-2","text-center");
         error.textContent = value;
 
         //Inyectar el error
-        form.appendChild(error);
+        referencia.appendChild(error);
+    }
+
+    function limpiarAlerta(referencia){
+        const alerta = referencia.querySelector(".bg-red-600");
+        if(alerta){
+            alerta.remove();
+        }
+    }
+
+    function validarEmail(email){
+        const regex =  /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/ ;
+        const resultado = regex.test(email);
+        return resultado;
     }
 });
