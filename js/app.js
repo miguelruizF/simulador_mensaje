@@ -5,8 +5,10 @@ d.addEventListener("DOMContentLoaded", ()=> {
     const inputEmail = d.querySelector("#email");
     const inputAsunto = d.querySelector("#asunto");
     const inputMensaje = d.querySelector("#mensaje");
-    const form = d.querySelector("form");
-    const btnSubmit = d.querySelector("#formulario button[type='submit']")
+    const form = d.querySelector("#formulario");
+    const btnSubmit = d.querySelector("#formulario button[type='submit']");
+    const btnReset = d.querySelector("#formulario button[type='reset']");
+    const spinner = d.querySelector("#spinner");
 
     const email = {
         email: "",
@@ -19,6 +21,13 @@ d.addEventListener("DOMContentLoaded", ()=> {
     inputEmail.addEventListener("input",validar);
     inputAsunto.addEventListener("input", validar);
     inputMensaje.addEventListener("input", validar);
+    btnReset.addEventListener("click", (e)=>{
+        e.preventDefault();
+        //Reiniciar el objeto
+        resetFormulario();
+    });
+
+    form.addEventListener("submit", enviarEmail);
 
     function validar(e) {
         if(e.target.value.trim() === ""){
@@ -81,6 +90,37 @@ d.addEventListener("DOMContentLoaded", ()=> {
             return;
         }
         btnSubmit.classList.remove("opacity-50");
-        btnSubmit.disable = false;
+        btnSubmit.disabled = false;
+    }
+
+    function enviarEmail(e){
+        e.preventDefault();
+        spinner.classList.add("flex");
+        spinner.classList.remove("hidden"); 
+
+        setTimeout(() => {
+            spinner.classList.remove("flex");
+            spinner.classList.add("hidden");
+
+            resetFormulario();
+
+            //Crear alerta de envio
+            const alertaExito = d.createElement("p");
+            alertaExito.classList.add("bg-green-500", "text-white", "p-2", "text-center", "rounded-lg", "mt-10", "font-bold", "text-sm", "uppercase");
+            alertaExito.textContent = "Mensaje enviado correctamente";
+            form.appendChild(alertaExito);
+
+            setTimeout(() => {
+                alertaExito.remove();
+            }, 3000);
+        }, 3000);
+    }
+
+    function resetFormulario(){
+        email.email = "";
+        email.asunto = "";
+        email.mensaje = "";
+        form.reset();
+        comprobarEmail();
     }
 });
